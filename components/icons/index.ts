@@ -1,5 +1,7 @@
 import Logo from "./logo";
+import MountainIcon from "./mountain";
 
 export const Icons = {
-  logo: Logo,
+  Logo: Logo,
+  Mountain: MountainIcon,
 };
