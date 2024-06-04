@@ -1,11 +1,10 @@
-import { NextApiRequest } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { NFTCollectionReject, NFTCollectionResponse } from "@/web3/types";
 
 const crossmintApiUrl = process.env.NEXT_PUBLIC_CROSSMINT_API_URL;
 const crossmintApiKey = process.env.CROSSMINT_API_KEY;
 
-export const POST = async (req: NextApiRequest) => {
+export const POST = async (req: NextRequest) => {
   const data = req.body;
   try {
     const crossmintRequest = await fetch(
