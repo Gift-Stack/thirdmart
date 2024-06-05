@@ -3,38 +3,46 @@
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { useSwitchNetwork } from "wagmi";
+import { useRouter } from "next/navigation";
 
 const blockchains = [
   {
     name: "Ethereum",
     description: "The most popular blockchain",
     disabled: false,
+    chainId: 1,
   },
   {
     name: "Polygon",
     description: "The most popular blockchain",
     disabled: false,
+    chainId: 137,
   },
   {
     name: "Avalanche",
     description: "The most popular blockchain",
     disabled: false,
+    chainId: 43114,
   },
   {
     name: "Binance Smart Chain",
     description: "The second most popular blockchain",
     disabled: false,
+    chainId: 56,
   },
   {
     name: "Fantom",
     description: "The most popular blockchain",
     disabled: false,
+    chainId: 250,
   },
 ];
 
 type Chain = (typeof blockchains)[number];
 
 export default function SelectNetwork() {
+  const { push } = useRouter();
   const [showMultiChain, setShowMultiChain] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const filteredBlockchains = useMemo(() => {
@@ -42,6 +50,7 @@ export default function SelectNetwork() {
       blockchain.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm]);
+  const { switchNetworkAsync: switchNetwork } = useSwitchNetwork();
   return (
     <div className="flex flex-col h-screen">
       <header className=" py-4 px-6 flex items-center justify-between">
@@ -71,7 +80,15 @@ export default function SelectNetwork() {
             <NetworkCard
               key={blockchain.name}
               chain={blockchain}
-              onClick={() => setShowMultiChain(true)}
+              onClick={() =>
+                switchNetwork?.(blockchain.chainId)
+                  .then(() => {
+                    push("/app/dashboard");
+                  })
+                  .catch((error) => {
+                    console.log("Error switching network", error);
+                  })
+              }
             />
           ))}
         </div>
@@ -103,7 +120,7 @@ function NetworkCard({
   chain,
   onClick,
 }: {
-  chain: Chain;
+  chain: Chain | Omit<Chain, "chainId">;
   onClick: () => void;
 }) {
   return (

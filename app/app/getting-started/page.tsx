@@ -50,7 +50,11 @@ export default function GettingStarted() {
               Seamlessly integrate your existing web applications.
             </p>
             <div className="mt-6">
-              <Button className="w-full py-6">Integrate with Web2 Apps</Button>
+              <Link href="/app/getting-started/connect-github">
+                <Button className="w-full py-6">
+                  Integrate with Web2 Apps
+                </Button>
+              </Link>
               <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 Mobile Integration - Coming Soon
               </div>
