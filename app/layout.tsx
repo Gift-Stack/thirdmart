@@ -13,7 +13,7 @@ const cabin = Cabin({
 });
 
 export const metadata: Metadata = {
-  title: "Segment | Create DeFi Apps with ease",
+  title: "Thirdmart | Create DeFi Apps with ease",
   description: "Create DeFi Apps with ease",
 };
 

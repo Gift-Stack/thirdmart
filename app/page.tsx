@@ -12,7 +12,7 @@ export default function Home() {
           prefetch={false}
         >
           <Icons.Mountain className="h-6 w-6" />
-          <span className="sr-only">Segment</span>
+          <span className="sr-only">Thirdmart</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link

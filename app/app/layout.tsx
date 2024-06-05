@@ -12,7 +12,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           prefetch={false}
         >
           <Icons.Mountain className="h-6 w-6" />
-          <span className="sr-only">Segment</span>
+          <span className="sr-only">Thirdmart</span>
         </Link>
         <ConnectWalletButton />
       </header>
