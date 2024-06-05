@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { useSwitchNetwork } from "wagmi";
-import { useRouter } from "next/navigation";
+import { useAccount, useChainId, useSwitchNetwork } from "wagmi";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { Button } from "@/components/ui/button";
 
 const blockchains = [
   {
@@ -31,30 +33,78 @@ const blockchains = [
     disabled: false,
     chainId: 56,
   },
-  {
-    name: "Fantom",
-    description: "The most popular blockchain",
-    disabled: false,
-    chainId: 250,
-  },
 ];
 
 type Chain = (typeof blockchains)[number];
 
-export default function SelectNetwork() {
+export default function SelectNetwork({
+  searchParams,
+}: {
+  searchParams: Record<string, string | undefined>;
+}) {
+  const { chainId: searchChainId } = searchParams;
   const { push } = useRouter();
-  const [showMultiChain, setShowMultiChain] = useState(false);
+  const pathname = usePathname();
+  const primitiveSearchParams = useSearchParams();
+  const { isConnected } = useAccount();
+  const { switchNetworkAsync: switchNetwork } = useSwitchNetwork();
+  const { openConnectModal } = useConnectModal();
+  const connectedChainId = useChainId();
+
+  const [_, setShowMultiChain] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
   const filteredBlockchains = useMemo(() => {
     return blockchains.filter((blockchain) =>
       blockchain.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm]);
-  const { switchNetworkAsync: switchNetwork } = useSwitchNetwork();
+
+  const changeNetwork = useCallback(
+    async (chainId: number) => {
+      if (String(chainId) !== searchChainId) {
+        await switchNetwork?.(chainId);
+      }
+
+      const params = new URLSearchParams(primitiveSearchParams?.toString());
+      params.set("chainId", String(chainId));
+
+      push(pathname + "?" + params.toString(), { scroll: false });
+    },
+    [primitiveSearchParams, pathname, push, searchChainId, switchNetwork]
+  );
+
+  const proceed = useCallback(async () => {
+    if (!isConnected) {
+      openConnectModal?.();
+    } else {
+      if (String(connectedChainId) !== searchChainId) {
+        await switchNetwork?.(connectedChainId);
+      }
+
+      const params = new URLSearchParams(primitiveSearchParams?.toString());
+
+      push("/app/dashboard" + "?" + params.toString());
+    }
+  }, [
+    connectedChainId,
+    isConnected,
+    openConnectModal,
+    primitiveSearchParams,
+    push,
+    searchChainId,
+    switchNetwork,
+  ]);
+
   return (
     <div className="flex flex-col h-screen">
       <header className=" py-4 px-6 flex items-center justify-between">
         <div className="text-lg font-semibold">Select Network</div>
+        {searchChainId && (
+          <Button variant="outline" onClick={proceed}>
+            {isConnected ? "Proceed" : "Connect to proceed"}
+          </Button>
+        )}
       </header>
       <main className="flex-1 bg-white dark:bg-gray-900 p-6">
         <div className="mb-6">
@@ -72,7 +122,9 @@ export default function SelectNetwork() {
               name: "Multi-chain",
               description: "Coming Soon",
               disabled: true,
+              chainId: -1,
             }}
+            activeChainId={searchChainId}
             onClick={() => setShowMultiChain(true)}
           />
 
@@ -80,15 +132,8 @@ export default function SelectNetwork() {
             <NetworkCard
               key={blockchain.name}
               chain={blockchain}
-              onClick={() =>
-                switchNetwork?.(blockchain.chainId)
-                  .then(() => {
-                    push("/app/dashboard");
-                  })
-                  .catch((error) => {
-                    console.log("Error switching network", error);
-                  })
-              }
+              onClick={() => changeNetwork(blockchain.chainId)}
+              activeChainId={searchChainId}
             />
           ))}
         </div>
@@ -117,16 +162,22 @@ function BitcoinIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 function NetworkCard({
+  activeChainId,
   chain,
   onClick,
 }: {
-  chain: Chain | Omit<Chain, "chainId">;
+  activeChainId?: string | undefined;
+  chain: Chain;
   onClick: () => void;
 }) {
   return (
     <Card
       className={`bg-white dark:bg-gray-800 p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ${
         chain.disabled ? "opacity-50 pointer-events-none" : ""
+      } ${
+        activeChainId === String(chain.chainId)
+          ? "border-2 border-gray-500 dark:border-gray-400"
+          : ""
       }`}
       onClick={chain.disabled ? undefined : onClick}
     >

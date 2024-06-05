@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Cabin } from "next/font/google";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { WagmiConfig } from "wagmi";
-import { chains, config } from "@/web3/chains";
+import Providers from "./providers";
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
@@ -25,9 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cabin.variable}>
-        <WagmiConfig config={config}>
-          <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
-        </WagmiConfig>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

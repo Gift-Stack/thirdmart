@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import Loading from "@/components/compounds/loading";
 
 export default function ConnectGithub({
   searchParams,
@@ -13,7 +14,18 @@ export default function ConnectGithub({
   const { push } = useRouter();
   const { error, error_description, code } = searchParams;
 
+  // Getting `windows` from browser -- So had to use function to avoid getting error for using `window`
+  const constructGithubUrl = () => {
+    return `https://github.com/login/oauth/authorize?client_id=${
+      process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
+    }&redirect_uri=${window.location.href.split("?")[0]}`;
+  };
+
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     if (error && error_description) {
       toast.error(error_description, {
         id: "github-connect-error",
@@ -32,6 +44,10 @@ export default function ConnectGithub({
     }
   }, [code, error, error_description, push]);
 
+  if (typeof window === "undefined") {
+    return <Loading />;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-screen px-4 sm:px-6 md:px-8">
       <div className="max-w-md w-full space-y-6">
@@ -44,9 +60,7 @@ export default function ConnectGithub({
             web applications with decentralized finance (DeFi) protocols.
           </p>
         </div>
-        <Link
-          href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=http://localhost:3002/app/getting-started/connect-github`}
-        >
+        <Link href={constructGithubUrl()}>
           <Button className="w-full">
             <GithubIcon className="mr-2 h-5 w-5" />
             Connect GitHub
