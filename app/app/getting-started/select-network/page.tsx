@@ -43,7 +43,7 @@ export default function SelectNetwork({
   searchParams: Record<string, string | undefined>;
 }) {
   const { chainId: searchChainId } = searchParams;
-  const { push } = useRouter();
+  const { push, replace } = useRouter();
   const pathname = usePathname();
   const primitiveSearchParams = useSearchParams();
   const { isConnected } = useAccount();
@@ -69,9 +69,9 @@ export default function SelectNetwork({
       const params = new URLSearchParams(primitiveSearchParams?.toString());
       params.set("chainId", String(chainId));
 
-      push(pathname + "?" + params.toString(), { scroll: false });
+      replace(pathname + "?" + params.toString(), { scroll: false });
     },
-    [primitiveSearchParams, pathname, push, searchChainId, switchNetwork]
+    [searchChainId, primitiveSearchParams, replace, pathname, switchNetwork]
   );
 
   const proceed = useCallback(async () => {
