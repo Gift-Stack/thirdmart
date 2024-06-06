@@ -9,7 +9,6 @@ import {
   useConnect,
   useDisconnect,
 } from "wagmi";
-import { baseSepolia } from "viem/chains";
 import { coinbaseWallet } from "wagmi/connectors";
 import { shortenAddress } from "@/web3/utils";
 
