@@ -1,15 +1,20 @@
 "use client";
-import React from "react";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { WagmiConfig } from "wagmi";
-import { chains, config } from "@/web3/chains";
+import { useState, type ReactNode } from "react";
+// TODO: Plausibly replace rainbowkit with Web3modal
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
 
-const Providers = ({ children }: { children: React.ReactNode }) => {
+import { config, chains } from "@/web3/chains";
+
+const Providers = ({ children }: { children: ReactNode }) => {
+  const [queryClient] = useState(() => new QueryClient());
   return (
     <>
-      <WagmiConfig config={config}>
-        <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
-      </WagmiConfig>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </WagmiProvider>
     </>
   );
 };

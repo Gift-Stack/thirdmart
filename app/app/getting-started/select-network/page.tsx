@@ -3,10 +3,12 @@
 import { useState, useMemo, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { useAccount, useChainId, useSwitchNetwork } from "wagmi";
+import { useAccount, useChainId, useConnect, useSwitchChain } from "wagmi";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
+import { Chain as AppChain } from "@/web3/chains";
+import { coinbaseWallet } from "wagmi/connectors";
+import { base, baseSepolia } from "viem/chains";
 
 const blockchains = [
   {
@@ -14,6 +16,18 @@ const blockchains = [
     description: "The most popular blockchain",
     disabled: false,
     chainId: 1,
+  },
+  {
+    name: "Base",
+    description: "The most popular blockchain",
+    disabled: false,
+    chainId: base.id,
+  },
+  {
+    name: "Base Sepolia",
+    description: "The most popular blockchain",
+    disabled: false,
+    chainId: baseSepolia.id,
   },
   {
     name: "Polygon",
@@ -33,7 +47,7 @@ const blockchains = [
     disabled: false,
     chainId: 56,
   },
-];
+] as const;
 
 type Chain = (typeof blockchains)[number];
 
@@ -47,8 +61,8 @@ export default function SelectNetwork({
   const pathname = usePathname();
   const primitiveSearchParams = useSearchParams();
   const { isConnected } = useAccount();
-  const { switchNetworkAsync: switchNetwork } = useSwitchNetwork();
-  const { openConnectModal } = useConnectModal();
+  const { switchChainAsync: switchNetwork } = useSwitchChain();
+  const { connectAsync: openConnectModal } = useConnect();
   const connectedChainId = useChainId();
 
   const [_, setShowMultiChain] = useState(false);
@@ -61,9 +75,9 @@ export default function SelectNetwork({
   }, [searchTerm]);
 
   const changeNetwork = useCallback(
-    async (chainId: number) => {
+    async (chainId: AppChain) => {
       if (String(chainId) !== searchChainId) {
-        await switchNetwork?.(chainId);
+        await switchNetwork?.({ chainId });
       }
 
       const params = new URLSearchParams(primitiveSearchParams?.toString());
@@ -76,10 +90,10 @@ export default function SelectNetwork({
 
   const proceed = useCallback(async () => {
     if (!isConnected) {
-      openConnectModal?.();
+      openConnectModal?.({ connector: coinbaseWallet() });
     } else {
       if (String(connectedChainId) !== searchChainId) {
-        await switchNetwork?.(connectedChainId);
+        await switchNetwork?.({ chainId: connectedChainId });
       }
 
       const params = new URLSearchParams(primitiveSearchParams?.toString());
@@ -167,7 +181,14 @@ function NetworkCard({
   onClick,
 }: {
   activeChainId?: string | undefined;
-  chain: Chain;
+  chain:
+    | Chain
+    | {
+        name: "Multi-chain";
+        description: string;
+        disabled: boolean;
+        chainId: -1;
+      };
   onClick: () => void;
 }) {
   return (

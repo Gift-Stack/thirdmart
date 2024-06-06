@@ -10,7 +10,7 @@ import {
 const crossmintApiUrl = process.env.NEXT_PUBLIC_CROSSMINT_API_URL;
 const crossmintApiKey = process.env.NEXT_PUBLIC_CROSSMINT_API_KEY;
 
-export const useCrossMint = () => {
+export const useCrossMint = async () => {
   return {
     createNftCollention,
   };
