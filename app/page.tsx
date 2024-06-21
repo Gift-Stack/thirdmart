@@ -45,6 +45,31 @@ export default function Home() {
           </Link>
         </nav>
       </header>
+
+      {/* 3D Model */}
+      {/* <section className="h-screen w-screen flex items-center justify-center">
+        <iframe
+          src="https://my.spline.design/particles-53df9134c6d2dc358c8feb9f963e358f/"
+          width="100%"
+          height="100%"
+          style={{
+            zIndex: 0,
+            transform: "scale3d(1none,1none,1none)",
+            transformStyle: "preserve-3d",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            position: "relative",
+            top: "0%",
+            bottom: "0%",
+            left: "0%",
+            right: "0%",
+          }}
+        ></iframe>
+      </section> */}
+
       <main className="flex-1">
         <section className="w-full pt-12 md:pt-24 lg:pt-32 border-y">
           <div className="px-4 md:px-6 space-y-10 xl:space-y-16">
