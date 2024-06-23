@@ -1,10 +1,14 @@
+"use client";
 import { Icons } from "@/components/icons";
 import TokenList from "@/components/modals/token-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TransparentInput } from "@/components/ui/input";
+import useStore from "@/store";
 
 export default function Dashboard() {
+  const { windowColor } = useStore((state) => state);
+
   return (
     <main className="flex-1 flex">
       <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8">
@@ -19,7 +23,10 @@ export default function Dashboard() {
             <Icons.Computer className="w-5 h-5" />
           </Button>
         </div>
-        <Card className="w-full max-w-[800px] h-[500px] overflow-hidden bg-red-400">
+        <Card
+          className={"w-full max-w-[800px] h-[500px] overflow-hidden"}
+          style={{ background: windowColor }}
+        >
           <CardContent className="flex flex-col items-center justify-center h-full">
             <div className="w-[350px] h-[80%] max-h-[700px] flex flex-col justify-center rounded-xl gap-3">
               <Info />
@@ -69,6 +76,8 @@ export default function Dashboard() {
 }
 
 const Info = () => {
+  const { title, description, modifyInfo } = useStore((state) => state);
+
   return (
     <div className="opacity-100">
       <div className="relative rounded-xl border border-accent shadow-sm bg-white dark:bg-background bg-gradient-to-r from-[#3b82f6]/20 to-[#ec4899]/20">
@@ -118,22 +127,21 @@ const Info = () => {
                     d="M152.76794 93.858A64.00219 64.00219 0 0 1 200.93555 72H232M32 184H55.06445a64.00212 64.00212 0 0 0 48.16769-21.85814"
                   ></path>
                 </svg>
-                Cross-chain Swap
+                <span
+                  contentEditable // TODO: uncomment when we have a way to edit the title
+                  onBlur={(e) => modifyInfo("title", e.target.innerText)}
+                >
+                  {title}
+                </span>
               </span>
             </div>
           </h3>
-          <div className="text-sm text-muted-foreground">
-            Swap tokens natively across 15 chains including Ethereum, Arbitrum,
-            Optimism, Polygon, Base and more!{" "}
-            <a
-              target="_blank"
-              className="text-blue hover:underline"
-              href="https://www.sushi.com/blog/sushixswap-v2"
-              rel="noreferrer"
-            >
-              Learn more.
-            </a>
-          </div>
+          <div
+            contentEditable
+            onBlur={(e) => modifyInfo("description", e.target.innerText)}
+            className="text-sm text-muted-foreground"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
         </div>
       </div>
     </div>
