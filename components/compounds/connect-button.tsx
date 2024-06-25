@@ -12,6 +12,15 @@ import {
 import { coinbaseWallet } from "wagmi/connectors";
 import { shortenAddress } from "@/web3/utils";
 
+import {
+  Avatar,
+  Identity,
+  Name,
+  Badge,
+  Address,
+} from "@coinbase/onchainkit/identity";
+import { ConnectAccount } from "@coinbase/onchainkit/wallet";
+
 function ConnectWalletButton() {
   const account = useAccount();
   const { status, connect } = useConnect();
@@ -32,7 +41,7 @@ function ConnectWalletButton() {
       })}
     >
       {(() => {
-        if (account.status === "disconnected") {
+        if (account.status === "disconnected" || !account.address) {
           return (
             <Button
               onClick={() =>
@@ -48,10 +57,16 @@ function ConnectWalletButton() {
 
         return (
           <div style={{ display: "flex", gap: 12 }}>
-            <Button>
-              {shortenAddress(account.addresses?.[0] ?? "")}
-              {balance?.value ? ` (${balance.value})` : ""}
-            </Button>
+            <Identity
+              address={account.address}
+              schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+            >
+              <Avatar>
+                <Badge />
+              </Avatar>
+              <Name className="text-xs" />
+              <Address className="text-xs" />
+            </Identity>
           </div>
         );
       })()}

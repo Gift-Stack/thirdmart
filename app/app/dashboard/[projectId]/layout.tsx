@@ -3,31 +3,33 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import DappComponents from "./components/dapp-components";
 import Header from "./components/header";
+import ConnectWalletButton from "@/components/compounds/connect-button";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [componentsNavOpened, setComponentsNavOpened] = useState(false);
 
-  const toggle = () => setIsOpen((prev) => !prev);
+  const toggle = () => {
+    if (isOpen) {
+      setIsOpen(false);
+      setComponentsNavOpened(false);
+    } else {
+      setIsOpen(true);
+    }
+  };
   const toggleComponentsNav = () => setComponentsNavOpened((prev) => !prev);
   return (
     <div className="flex h-screen w-full">
       <div
-        className={cn(
-          "flex flex-col bg-background border-r border-muted w-64 shrink-0 overflow-hidden transition-all duration-200 ease-in-out",
-          { "w-0": isOpen }
-        )}
+        className={`flex flex-col bg-background border-r border-muted shrink-0 overflow-hidden transition-all duration-200 ease-in-out ${
+          isOpen ? "w-64" : "w-0"
+        }`}
       >
         <Header />
         <nav className="flex flex-col gap-2 p-4">
-          <Button variant="ghost" className="justify-start gap-2">
-            <Icons.LayoutGrid className="w-5 h-5" />
-            <span>Dashboard</span>
-          </Button>
           <Button
             onClick={toggleComponentsNav}
             variant="ghost"
@@ -57,28 +59,29 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <Icons.Menu className="w-5 h-5" />
             </Button>
           </div>
-          <nav className="ml-auto flex gap-4">
+          <nav className="ml-auto flex items-center gap-4">
             <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4"
+              href="/app/dashboard"
+              className="text-xs font-medium hover:underline underline-offset-4 uppercase"
+              prefetch={false}
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/docs"
+              className="text-xs font-medium hover:underline underline-offset-4 uppercase"
               prefetch={false}
             >
               Docs
             </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              Pricing
-            </Link>
-            <Link
+            {/* <Link
               href="#"
               className="text-sm font-medium hover:underline underline-offset-4"
               prefetch={false}
             >
               Support
-            </Link>
+            </Link> */}
+            <ConnectWalletButton />
           </nav>
         </header>
         {children}

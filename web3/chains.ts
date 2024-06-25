@@ -26,7 +26,7 @@ export const config = createConfig({
   chains,
   connectors: [
     // injected(),
-    coinbaseWallet({ appName: "Thirdmart", preference: "smartWalletOnly" }),
+    coinbaseWallet({ appName: "Thirdmart", preference: "all" }),
     // walletConnect({ projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID! }),
   ],
   ssr: true,

@@ -98,7 +98,7 @@ export default function SelectNetwork({
 
       const params = new URLSearchParams(primitiveSearchParams?.toString());
 
-      push("/app/dashboard" + "?" + params.toString());
+      push("/app/dashboard/1" + "?" + params.toString());
     }
   }, [
     connectedChainId,

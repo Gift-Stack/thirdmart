@@ -16,24 +16,21 @@ export default function GettingStarted() {
           <div>
             <h2 className="text-2xl font-bold">Building from Scratch</h2>
             <p className="mt-2 text-gray-500 dark:text-gray-400">
-              Select the features you want to integrate.{" "}
-              <span className="text-sm">(You can always add more later)</span>
+              Build Cross-chain Swap using the visual composer and
+              pre-integrated DeFi capabilities.
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <Option
                 title="Visual Composer"
                 description="Drag-and-drop page builder"
-                disabled
               />
               <Option
                 title="DeFi Capabilities"
                 description="Integrate decentralized finance"
-                disabled
               />
               <Option
                 title="Blockchain Integration"
                 description="Connect to blockchain networks"
-                disabled
               />
             </div>
             <div className="mt-6">
@@ -47,14 +44,15 @@ export default function GettingStarted() {
               Integrating with Existing Web2 Apps
             </h2>
             <p className="mt-2 text-gray-500 dark:text-gray-400">
-              Seamlessly integrate your existing web applications.
+              Seamlessly integrate your existing web applications.{" "}
+              <span className="text-sm">(Coming Soon)</span>
             </p>
             <div className="mt-6">
-              <Link href="/app/getting-started/connect-github">
-                <Button className="w-full py-6">
-                  Integrate with Web2 Apps
-                </Button>
-              </Link>
+              {/* <Link href="/app/getting-started/connect-github"> */}
+              <Button className="w-full py-6 cursor-not-allowed">
+                Integrate with Web2 Apps
+              </Button>
+              {/* </Link> */}
               <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 Mobile Integration - Coming Soon
               </div>
@@ -87,7 +85,7 @@ const Option = ({
             {description}
           </p>
         </div>
-        <Switch disabled={disabled} />
+        <Switch checked={true} disabled={disabled} className="cursor-text" />
       </div>
     </div>
   );
