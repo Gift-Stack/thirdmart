@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { createProject } from "@/actions";
+import { createProject } from "@/actions/project";
 import { useUserStore } from "@/store";
 
 const CreateProjectDetail = ({ chainId }: { chainId: string }) => {

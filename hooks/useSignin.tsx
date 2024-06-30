@@ -1,4 +1,4 @@
-import { connectUser } from "@/actions";
+import { connectUser } from "@/actions/user";
 import { useUserStore } from "@/store";
 import { useCallback, useState } from "react";
 

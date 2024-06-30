@@ -21,10 +21,12 @@ export type Project = typeof info;
 
 type Store = Project & {
   modifyInfo: (key: keyof Project, value: Project[keyof Project]) => void;
+  projects: Project[];
 };
 
-const useStore = create<Store>((set) => ({
+export const useProjectStore = create<Store>((set) => ({
   ...info,
+  projects: [],
   modifyInfo: (key: keyof Project, value: Project[keyof Project]) => {
     set((state: Partial<Project>) => ({
       ...state,
@@ -33,7 +35,7 @@ const useStore = create<Store>((set) => ({
   },
 }));
 
-export const useProjectStore = () => {
-  const store = useStorePostHydration(useStore, (state) => state);
-  return store;
-};
+// export const useProjectStore = () => {
+//   const store = useStorePostHydration(useStore, (state) => state);
+//   return store;
+// };

@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Icons } from "@/components/icons";
-import DappComponents from "./components/dapp-components";
-import Header from "./components/header";
+import DappComponents from "../components/dapp-components";
+import Header from "../components/header";
 import ConnectWalletButton from "@/components/compounds/connect-button";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
