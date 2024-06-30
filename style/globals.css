@@ -32,4 +32,8 @@
     --bg-warning: theme(colors.orange.600);
     --bg-success: theme(colors.lime.300);
   }
+
+  a {
+    text-decoration: underline;
+  }
 }

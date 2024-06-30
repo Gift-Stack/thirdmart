@@ -27,7 +27,7 @@ const Pallete = async ({ projectId, preview = false }: PalletProps) => {
           }
         )}
       >
-        <Info project={project} />
+        <Info project={project} preview={preview} />
         <div className="bg-white h-full flex flex-col justify-between items-center rounded-xl py-3 px-3">
           <div className="flex items-center">
             <TransparentInput className="flex-1" />

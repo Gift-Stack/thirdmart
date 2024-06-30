@@ -21,7 +21,7 @@ const PreviewWrapper = ({
     <Card
       className={cn("w-full overflow-hidden flex flex-col justify-center", {
         "max-w-[800px] h-[500px]": !fullScreen,
-        "rounded-none h-full min-h-screen": fullScreen,
+        "rounded-none border-none h-full min-h-screen": fullScreen,
       })}
       style={{ background: windowColor }}
     >
@@ -34,7 +34,13 @@ const PreviewWrapper = ({
 
 export default PreviewWrapper;
 
-export const Info = ({ project }: { project: Project }) => {
+export const Info = ({
+  project,
+  preview,
+}: {
+  project: Project;
+  preview: boolean;
+}) => {
   const { title, description, modifyInfo } = useProjectStore();
 
   return (
@@ -46,7 +52,7 @@ export const Info = ({ project }: { project: Project }) => {
               <span className="text-base tracking-tighter saturate-200 flex items-center gap-2 bg-gradient-to-r from-[#3b82f6] to-[#ec4899] bg-clip-text text-transparent">
                 <CrossCommunicateIcon className="text-[#3b82f6]" />
                 <span
-                  contentEditable // TODO: uncomment when we have a way to edit the title
+                  contentEditable={!preview} // TODO: uncomment when we have a way to edit the title
                   onBlur={(e) => modifyInfo("title", e.target.innerText)}
                 >
                   {project.title}
@@ -55,7 +61,7 @@ export const Info = ({ project }: { project: Project }) => {
             </div>
           </h3>
           <div
-            contentEditable
+            contentEditable={!preview}
             onBlur={(e) => modifyInfo("description", e.target.innerText)}
             className="text-sm text-muted-foreground"
             dangerouslySetInnerHTML={{ __html: description }}
