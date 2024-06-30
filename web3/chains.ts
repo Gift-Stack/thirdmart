@@ -1,25 +1,43 @@
-"use client";
-import { getDefaultWallets } from "@rainbow-me/rainbowkit";
-import { configureChains, createConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, base, zora } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
+import { http, createConfig } from "wagmi";
+import {
+  avalanche,
+  base,
+  baseSepolia,
+  bsc,
+  mainnet,
+  polygon,
+  sepolia,
+} from "wagmi/chains";
+import { coinbaseWallet, injected, walletConnect } from "wagmi/connectors";
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, base, zora],
-  [publicProvider()]
-);
+export const chains = [
+  mainnet,
+  sepolia,
+  baseSepolia,
+  base,
+  polygon,
+  avalanche,
+  bsc,
+] as const;
 
-const { connectors } = getDefaultWallets({
-  appName: "Web3Mart",
-  projectId: process.env.NEXT_PUBLIC_RAINBOWKIT_PROJECT_ID as string,
-  chains,
-});
+export type Chain = (typeof chains)[number]["id"];
 
 export const config = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-  webSocketPublicClient,
+  chains,
+  connectors: [
+    // injected(),
+    coinbaseWallet({ appName: "Thirdmart", preference: "all" }),
+    // walletConnect({ projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID! }),
+  ],
+  ssr: true,
+  transports: chains.reduce((acc, chain) => {
+    acc[chain.id] = http();
+    return acc;
+  }, {} as Record<number, any>),
 });
 
-export { chains };
+declare module "wagmi" {
+  interface Register {
+    config: typeof config;
+  }
+}

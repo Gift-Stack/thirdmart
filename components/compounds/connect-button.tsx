@@ -1,78 +1,80 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-const ConnectWalletButton = () => {
+import {
+  useAccount,
+  useBalance,
+  useChainId,
+  useConnect,
+  useDisconnect,
+} from "wagmi";
+import { coinbaseWallet } from "wagmi/connectors";
+import { shortenAddress } from "@/web3/utils";
+
+import {
+  Avatar,
+  Identity,
+  Name,
+  Badge,
+  Address,
+} from "@coinbase/onchainkit/identity";
+import useSignIn from "@/hooks/useSignin";
+
+function ConnectWalletButton() {
+  const account = useAccount();
+  const { status, connectAsync: connect } = useConnect();
+  const { disconnect } = useDisconnect();
+  const chainId = useChainId();
+  const { data: balance } = useBalance();
+  const { loading, signIn } = useSignIn();
+
+  const createAccount = async () => {
+    const walletData = await connect({
+      connector: coinbaseWallet(),
+    });
+
+    await signIn(walletData.accounts[0]);
+  };
+
   return (
-    <ConnectButton.Custom>
-      {({
-        account,
-        chain,
-        openAccountModal,
-        openChainModal,
-        openConnectModal,
-        authenticationStatus,
-        mounted,
-      }) => {
-        const ready = mounted && authenticationStatus !== "loading";
-        const connected =
-          ready &&
-          account &&
-          chain &&
-          (!authenticationStatus || authenticationStatus === "authenticated");
-        return (
-          <>
-            {(() => {
-              if (!connected) {
-                return (
-                  <Button onClick={openConnectModal}>Connect Wallet</Button>
-                );
-              }
-              return (
-                <div style={{ display: "flex", gap: 12 }}>
-                  <Button
-                    onClick={openChainModal}
-                    style={{ display: "flex", alignItems: "center" }}
-                  >
-                    {chain.hasIcon && (
-                      <div
-                        style={{
-                          background: chain.iconBackground,
-                          width: 12,
-                          height: 12,
-                          borderRadius: 999,
-                          overflow: "hidden",
-                          marginRight: 4,
-                        }}
-                      >
-                        {chain.iconUrl && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            alt={chain.name ?? "Chain icon"}
-                            src={chain.iconUrl}
-                            style={{ width: 12, height: 12 }}
-                          />
-                        )}
-                      </div>
-                    )}
-                    {chain.name}
-                  </Button>
+    <div
+      className=""
+      {...(status === "pending" && {
+        "aria-hidden": true,
+        style: {
+          opacity: 0,
+          pointerEvents: "none",
+          userSelect: "none",
+        },
+      })}
+    >
+      {(() => {
+        if (account.status === "disconnected" || !account.address) {
+          return (
+            <Button onClick={createAccount}>
+              {loading ? "Creating account..." : "Create account"}
+            </Button>
+          );
+        }
 
-                  <Button onClick={openAccountModal}>
-                    {account.displayName}
-                    {account.displayBalance
-                      ? ` (${account.displayBalance})`
-                      : ""}
-                  </Button>
-                </div>
-              );
-            })()}
-          </>
+        return (
+          <div style={{ display: "flex", gap: 12 }}>
+            <Identity
+              address={account.address}
+              schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+            >
+              <Avatar>
+                <Badge />
+              </Avatar>
+              <Name className="text-xs" />
+              <Address className="text-xs" />
+            </Identity>
+          </div>
         );
-      }}
-    </ConnectButton.Custom>
+      })()}
+    </div>
   );
-};
+}
 
 export default ConnectWalletButton;

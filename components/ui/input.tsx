@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -17,9 +17,30 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         {...props}
       />
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = "Input";
 
-export { Input }
+const TransparentInput = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <Input
+        type={type}
+        className="truncate appearance-none dark:text-slate-50 text-gray-900 w-full !ring-0 !outline-none min-h-[40px] h-[40px] py-2 border-0 bg-transparent p-0 !text-3xl font-medium flex-grow flex-1 shadow-none"
+        autoCorrect="off"
+        autoCapitalize="none"
+        spellCheck="false"
+        autoComplete="off"
+        placeholder="0.0"
+        testdata-id="swap-from-input"
+        data-state="active"
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+TransparentInput.displayName = "TransparentInput";
+
+export { Input, TransparentInput };
