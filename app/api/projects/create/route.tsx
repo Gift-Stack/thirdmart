@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (request: NextRequest) => {
   try {
-    const { chainId, userId, name } = await request.json();
+    const { chainId, userId, name, title } = await request.json();
 
     const api_response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/project/create`,
+      `${process.env.NEXT_PUBLIC_API_URL}/projects/create`,
       {
         method: "POST",
         headers: {
@@ -15,6 +15,7 @@ export const POST = async (request: NextRequest) => {
           chainId,
           userId,
           name,
+          title,
           theme: "spring",
           useSmartWallet: true,
         }),
@@ -23,9 +24,8 @@ export const POST = async (request: NextRequest) => {
 
     const api_body = await api_response.json();
 
-    return new NextResponse(api_body, {
+    return NextResponse.json(api_body.data, {
       status: api_response.status,
-      headers: api_response.headers,
     });
   } catch (error) {
     if (error instanceof Error) {

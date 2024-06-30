@@ -1,4 +1,4 @@
-import { User } from "@/store";
+import { Project, User } from "@/store";
 
 export const connectUser = async (walletAddress: string) => {
   const request = await fetch("/api/auth/connect-user", {
@@ -9,27 +9,24 @@ export const connectUser = async (walletAddress: string) => {
     body: JSON.stringify({ walletAddress }),
   });
 
-  const data: User = await request.json();
-  return data;
+  const user: User = await request.json();
+  return user;
 };
 
 export const createProject = async (data: {
-  chainId: number;
+  chainId: string;
   userId: string;
   name: string;
+  title: string;
 }) => {
   const request = await fetch("/api/projects/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      chainId: data.chainId,
-      userId: data.userId,
-      name: data.name,
-    }),
+    body: JSON.stringify(data),
   });
 
-  const project = await request.json();
+  const project: Project = await request.json();
   return project;
 };

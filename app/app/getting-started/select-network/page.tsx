@@ -10,6 +10,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Chain as AppChain } from "@/web3/chains";
 import { coinbaseWallet } from "wagmi/connectors";
 import { base, baseSepolia } from "viem/chains";
+import CreateProjectDetail from "@/components/modals/create-project-detail";
+import useSignIn from "@/hooks/useSignin";
 
 const blockchains = [
   {
@@ -65,6 +67,12 @@ export default function SelectNetwork({
   const { switchChainAsync: switchNetwork } = useSwitchChain();
   const { connectAsync: openConnectModal } = useConnect();
   const connectedChainId = useChainId();
+  const { loading, signIn } = useSignIn();
+
+  const signin = async () => {
+    const data = await openConnectModal?.({ connector: coinbaseWallet() });
+    await signIn(data.accounts[0]);
+  };
 
   const [_, setShowMultiChain] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -89,37 +97,19 @@ export default function SelectNetwork({
     [searchChainId, primitiveSearchParams, replace, pathname, switchNetwork]
   );
 
-  const proceed = useCallback(async () => {
-    if (!isConnected) {
-      openConnectModal?.({ connector: coinbaseWallet() });
-    } else {
-      if (String(connectedChainId) !== searchChainId) {
-        await switchNetwork?.({ chainId: connectedChainId });
-      }
-
-      const params = new URLSearchParams(primitiveSearchParams?.toString());
-
-      push("/app/dashboard/1" + "?" + params.toString());
-    }
-  }, [
-    connectedChainId,
-    isConnected,
-    openConnectModal,
-    primitiveSearchParams,
-    push,
-    searchChainId,
-    switchNetwork,
-  ]);
-
   return (
     <div className="flex flex-col h-screen">
       <header className=" py-4 px-6 flex items-center justify-between">
         <p className="text-lg font-semibold">Select Network</p>
-        {searchChainId && (
-          <Button variant="outline" onClick={proceed}>
-            {isConnected ? "Proceed" : "Connect to proceed"}
-          </Button>
-        )}
+
+        {searchChainId &&
+          (isConnected ? (
+            <CreateProjectDetail chainId={searchChainId} />
+          ) : (
+            <Button variant="outline" onClick={signin}>
+              {loading ? "Signing in..." : "Sign in to proceed"}
+            </Button>
+          ))}
       </header>
       <main className="flex-1 bg-white dark:bg-gray-900 p-6">
         <div className="mb-6">
