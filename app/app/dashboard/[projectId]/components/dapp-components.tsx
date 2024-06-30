@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Header from "./header";
-import useStore from "@/store";
+import { useProjectStore } from "@/store";
 import { GradientPicker } from "@/components/compounds/gradient";
 import { ArrowLeft } from "lucide-react";
 
@@ -13,9 +13,13 @@ const DappComponents = ({
   open: boolean;
   close: () => void;
 }) => {
-  const { modifyInfo, windowColor, title, description } = useStore(
-    (state) => state
-  );
+  const store = useProjectStore();
+
+  if (!store) {
+    return <div>Loading...</div>;
+  }
+
+  const { modifyInfo, windowColor, title, description } = store;
 
   return (
     <div

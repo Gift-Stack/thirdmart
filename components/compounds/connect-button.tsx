@@ -19,14 +19,23 @@ import {
   Badge,
   Address,
 } from "@coinbase/onchainkit/identity";
-import { ConnectAccount } from "@coinbase/onchainkit/wallet";
+import useSignIn from "@/hooks/useSignin";
 
 function ConnectWalletButton() {
   const account = useAccount();
-  const { status, connect } = useConnect();
+  const { status, connectAsync: connect } = useConnect();
   const { disconnect } = useDisconnect();
   const chainId = useChainId();
   const { data: balance } = useBalance();
+  const { loading, signIn } = useSignIn();
+
+  const createAccount = async () => {
+    const walletData = await connect({
+      connector: coinbaseWallet(),
+    });
+
+    await signIn(walletData.accounts[0]);
+  };
 
   return (
     <div
@@ -43,14 +52,8 @@ function ConnectWalletButton() {
       {(() => {
         if (account.status === "disconnected" || !account.address) {
           return (
-            <Button
-              onClick={() =>
-                connect({
-                  connector: coinbaseWallet(),
-                })
-              }
-            >
-              Create account
+            <Button onClick={createAccount}>
+              {loading ? "Creating account..." : "Create account"}
             </Button>
           );
         }

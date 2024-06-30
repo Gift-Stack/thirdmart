@@ -1,11 +1,17 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import useStore from "@/store";
+import { useProjectStore } from "@/store";
 import React from "react";
 
 const PreviewWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { windowColor } = useStore((state) => state);
+  const store = useProjectStore();
+
+  if (!store) {
+    return <div>Loading...</div>;
+  }
+
+  const { windowColor } = store;
   return (
     <Card
       className={"w-full max-w-[800px] h-[500px] overflow-hidden"}
@@ -21,7 +27,13 @@ const PreviewWrapper = ({ children }: { children: React.ReactNode }) => {
 export default PreviewWrapper;
 
 export const Info = () => {
-  const { title, description, modifyInfo } = useStore((state) => state);
+  const store = useProjectStore();
+
+  if (!store) {
+    return <div>Loading...</div>;
+  }
+
+  const { title, description, modifyInfo } = store;
 
   return (
     <div className="opacity-100">

@@ -2,7 +2,6 @@ import { Icons } from "@/components/icons";
 import TokenList from "@/components/modals/token-list";
 import { Button } from "@/components/ui/button";
 import { TransparentInput } from "@/components/ui/input";
-import useStore from "@/store";
 
 import {
   Swap,

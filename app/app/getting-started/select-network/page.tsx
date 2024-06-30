@@ -3,9 +3,10 @@
 import { useState, useMemo, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import BitcoinIcon from "@/icons/bitcoin";
 import { useAccount, useChainId, useConnect, useSwitchChain } from "wagmi";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Chain as AppChain } from "@/web3/chains";
 import { coinbaseWallet } from "wagmi/connectors";
 import { base, baseSepolia } from "viem/chains";
@@ -113,7 +114,7 @@ export default function SelectNetwork({
   return (
     <div className="flex flex-col h-screen">
       <header className=" py-4 px-6 flex items-center justify-between">
-        <div className="text-lg font-semibold">Select Network</div>
+        <p className="text-lg font-semibold">Select Network</p>
         {searchChainId && (
           <Button variant="outline" onClick={proceed}>
             {isConnected ? "Proceed" : "Connect to proceed"}
@@ -153,25 +154,6 @@ export default function SelectNetwork({
         </div>
       </main>
     </div>
-  );
-}
-
-function BitcoinIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727" />
-    </svg>
   );
 }
 
