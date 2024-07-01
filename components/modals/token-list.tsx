@@ -12,12 +12,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import type { Token } from "@coinbase/onchainkit/token";
 
 type Props = {
   direction: "from" | "to";
+  token: Token;
 };
 
-export function TokenList(props: Props) {
+export function TokenList({ token }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -44,7 +46,7 @@ export function TokenList(props: Props) {
               />
             </span>
           </div>
-          ETH
+          {token.symbol}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

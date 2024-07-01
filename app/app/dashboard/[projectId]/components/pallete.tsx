@@ -1,12 +1,9 @@
 import React from "react";
-import TokenList from "@/components/modals/token-list";
-import { Button } from "@/components/ui/button";
-import { TransparentInput } from "@/components/ui/input";
 import PreviewWrapper, { Info } from "./preview-wrapper";
 import { Project } from "@/store";
 import { getProject } from "@/actions/project";
 import { cn } from "@/lib/utils";
-import SwitchIcon from "@/icons/switch";
+import SwapComp from "./swap";
 
 type PalletProps = {
   projectId: string;
@@ -28,30 +25,8 @@ const Pallete = async ({ projectId, preview = false }: PalletProps) => {
         )}
       >
         <Info project={project} preview={preview} />
-        <div className="bg-white h-full flex flex-col justify-between items-center rounded-xl py-3 px-3">
-          <div className="flex items-center">
-            <TransparentInput className="flex-1" />
-            <TokenList direction="from" />
-          </div>
 
-          <div className="left-0 right-0 flex items-center justify-center">
-            <button
-              type="button"
-              className="hover:shadow-sm transition-border z-10 group bg-background p-2 border border-accent transition-all rounded-full cursor-pointer"
-            >
-              <div className="transition-transform rotate-0 group-hover:rotate-180">
-                <SwitchIcon className="w-4 h-4 lg:w-3 lg:h-3 text-blue" />
-              </div>
-            </button>
-          </div>
-
-          <div className="flex items-center">
-            <TransparentInput className="flex-1" />
-            <TokenList direction="to" />
-          </div>
-
-          <Button className="w-full mt-5">Swap</Button>
-        </div>
+        <SwapComp preview={preview} />
       </div>
     </PreviewWrapper>
   );
