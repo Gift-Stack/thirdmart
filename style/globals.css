@@ -33,3 +33,7 @@
     --bg-success: theme(colors.lime.300);
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}
